@@ -1,5 +1,6 @@
 # ==========================================
 # Project: Predicting Credit Card Approvals
+# Author: Ulas Aksac
 # Description: A Machine Learning pipeline to predict credit card approval decisions
 #              using Logistic Regression, GridSearch, and comprehensive preprocessing.
 # ==========================================
