@@ -1,1 +1,172 @@
+# ==========================================
+# Project: Predicting Credit Card Approvals
+# Description: A Machine Learning pipeline to predict credit card approval decisions
+#              using Logistic Regression, GridSearch, and comprehensive preprocessing.
+# ==========================================
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (confusion_matrix, classification_report, 
+                             roc_auc_score, roc_curve, ConfusionMatrixDisplay)
+
+# 1. Load and Inspect Data
+# ------------------------------------------
+# Load dataset (Headers are missing in the raw file)
+cc_apps = pd.read_csv("cc_approvals.data", header=None)
+
+# Replace missing value placeholders ('?') with actual NaNs
+cc_apps = cc_apps.replace('?', np.nan)
+
+# Fix Data Types: Ensure numeric columns are actually numeric
+# (Pandas interprets columns with '?' as 'object' by default)
+for col in cc_apps.columns:
+    cc_apps[col] = pd.to_numeric(cc_apps[col], errors='ignore')
+
+# Separate Features (X) and Target (y)
+X = cc_apps.iloc[:, :-1]
+y = cc_apps.iloc[:, -1]
+
+# Encode Target Variable (+/- to 1/0)
+le = LabelEncoder()
+y = le.fit_transform(y)
+print(f"Target distribution:\n{pd.Series(y).value_counts(normalize=True)}")
+
+# 2. Preprocessing Pipeline Setup
+# ------------------------------------------
+# Automatically identify numerical and categorical columns
+numeric_features = X.select_dtypes(include=['number']).columns
+categorical_features = X.select_dtypes(include=['object']).columns
+
+print(f"Numeric features found: {len(numeric_features)}")
+print(f"Categorical features found: {len(categorical_features)}")
+
+# Split data (Stratify is crucial for maintaining class balance)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Define Transformers
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('encoder', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# Combine transformers into a Preprocessor
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ]
+)
+
+# 3. Model Definition & Hyperparameter Tuning
+# ------------------------------------------
+# Create the full end-to-end pipeline
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', LogisticRegression(max_iter=1000))
+])
+
+# Define parameter grid for GridSearchCV
+param_grid = {
+    'classifier__C': [0.01, 0.1, 1, 10, 100],
+    'classifier__solver': ['liblinear', 'lbfgs']
+}
+
+# Setup GridSearchCV (5-Fold Cross-Validation)
+print("\nStarting Hyperparameter Tuning with GridSearchCV...")
+grid_search = GridSearchCV(
+    pipeline, 
+    param_grid, 
+    cv=5, 
+    scoring='accuracy', 
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train, y_train)
+
+# 4. Evaluation
+# ------------------------------------------
+best_model = grid_search.best_estimator_
+print(f"\nBest Parameters Found: {grid_search.best_params_}")
+print(f"Best CV Accuracy: {grid_search.best_score_:.4f}")
+
+# Predictions on Test Set
+y_pred = best_model.predict(X_test)
+y_proba = best_model.predict_proba(X_test)[:, 1]
+
+# Metrics Report
+print("\n--- Test Set Classification Report ---")
+print(classification_report(y_test, y_pred, target_names=['Denied', 'Approved']))
+
+# ROC AUC Score
+roc_auc = roc_auc_score(y_test, y_proba)
+print(f"ROC AUC Score: {roc_auc:.4f}")
+
+# 5. Visualizations
+# ------------------------------------------
+# Plot 1: Confusion Matrix
+fig, ax = plt.subplots(1, 2, figsize=(14, 6))
+
+ConfusionMatrixDisplay.from_estimator(
+    best_model, X_test, y_test, 
+    cmap='Blues', display_labels=['Denied', 'Approved'], ax=ax[0]
+)
+ax[0].set_title('Confusion Matrix')
+
+# Plot 2: ROC Curve
+fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+ax[1].plot(fpr, tpr, label=f'Logistic Regression (AUC = {roc_auc:.2f})', linewidth=2, color='darkorange')
+ax[1].plot([0, 1], [0, 1], 'k--', label='Random Guess')
+ax[1].set_xlabel('False Positive Rate')
+ax[1].set_ylabel('True Positive Rate')
+ax[1].set_title('ROC Curve')
+ax[1].legend(loc='lower right')
+ax[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 6. Feature Importance Analysis
+# ------------------------------------------
+# Extract feature names from the pipeline after One-Hot Encoding
+model_step = best_model.named_steps['classifier']
+preprocessor_step = best_model.named_steps['preprocessor']
+
+# Get transformed feature names
+feature_names = preprocessor_step.get_feature_names_out()
+coefficients = model_step.coef_.flatten()
+
+# Create a DataFrame for visualization
+feature_importance = pd.DataFrame({
+    'Feature': feature_names,
+    'Importance': coefficients
+})
+
+# Sort by absolute value to identify most impactful features
+feature_importance['Abs_Importance'] = feature_importance['Importance'].abs()
+feature_importance = feature_importance.sort_values(by='Abs_Importance', ascending=False).head(10)
+
+# Plot Feature Importance
+plt.figure(figsize=(10, 6))
+sns.barplot(x='Importance', y='Feature', data=feature_importance, palette='viridis')
+plt.title('Top 10 Features Influencing Credit Approval')
+plt.xlabel('Coefficient Value (Log Odds)')
+plt.axvline(0, color='black', linestyle='--')
+plt.grid(axis='x', alpha=0.3)
+plt.show()
