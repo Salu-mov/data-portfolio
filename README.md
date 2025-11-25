@@ -1,4 +1,4 @@
-# 📊 Data Science Portfolio | [Adınızı ve Soyadınızı Buraya Yazın]
+# 📊 Data Science Portfolio | Ulaş Aksaç
 
 Welcome to my data science portfolio repository! This collection showcases projects where I apply machine learning, statistical modeling, and data analysis to solve real-world problems and derive actionable insights. My focus is on robust model architectures, technical rigor, and creating clear, interpretable results.
 
