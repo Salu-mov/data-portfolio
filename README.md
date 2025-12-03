@@ -11,7 +11,7 @@ This repository showcases my journey in solving real-world problems using **Mach
 | Domain | Competencies & Tools |
 | :--- | :--- |
 | **Languages** | Python (Pandas, NumPy) | SQL |
-| **Machine Learning** | **Supervised:** Logistic Regression, KNN, Decision Trees <br> **Unsupervised:** K-Means Clustering, Elbow Method <br> **Frameworks:** Scikit-learn (Pipelines, GridSearchCV, ColumnTransformer) |
+| **Machine Learning** | **Supervised:** Logistic Regression, KNN <br> **Unsupervised:** K-Means Clustering, Elbow Method <br> **Frameworks:** Scikit-learn (Pipelines, GridSearchCV, ColumnTransformer) |
 | **Deep Learning / NLP** | *In Progress:* TF-IDF, Text Preprocessing (NLTK, SpaCy) |
 | **Model Evaluation** | ROC-AUC, Confusion Matrix, Cross-Validation, F1-Score |
 | **Visualization** | Matplotlib, Seaborn, Tableau |
@@ -28,7 +28,7 @@ This repository showcases my journey in solving real-world problems using **Mach
 * **Key Results:** Identified 5 distinct customer profiles (e.g., "VIP/Champions", "Budget-Conscious"), providing actionable insights for targeted campaigns.
 * **Tech:** Python, Scikit-learn, Seaborn, Statistics.
 
-### 2️⃣ [Automated Credit Card Approval Predictor](./Credit-Card-Approval-Prediction)
+### 2️⃣ [Automated Credit Card Approval Predictor](./Credit-Card-Prediction)
 **Type:** Supervised Learning (Classification) | **Status:** ✅ Completed
 * **Goal:** Automate credit assessment to minimize financial risk and manual review time.
 * **Methodology:** Built an end-to-end **Scikit-learn Pipeline** handling missing data imputation, scaling, and encoding. Optimized a Logistic Regression model via **GridSearchCV**.
@@ -36,7 +36,7 @@ This repository showcases my journey in solving real-world problems using **Mach
 * **Tech:** Scikit-learn Pipeline, GridSearchCV, Confusion Matrix.
 
 ### 3️⃣ [Sentiment Analysis Classifier](./Sentiment-Analysis)
-**Type:** Natural Language Processing (NLP) | **Status:** 🚧 In Progress
+**Type:** Natural Language Processing (NLP) | **Status:** 🚧 In Progress *(Link will be active soon)*
 * **Goal:** Detect sentiment (Positive/Negative) in text data using Machine Learning.
 * **Approach:** Implementing text preprocessing (tokenization, stop-word removal) and **TF-IDF Vectorization**.
 * **Tech:** NLTK, SpaCy, Scikit-learn.
