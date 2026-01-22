@@ -22,21 +22,21 @@ This repository showcases my journey in solving real-world problems using **Mach
 ## 🏆 Featured Projects
 
 ### 1️⃣ [Customer Segmentation Analysis (K-Means)](./Mall-Customer-Segmentation)
-**Type:** Unsupervised Learning | **Status:** ✅ Completed
+**Type:** Unsupervised Learning 
 * **Goal:** Segment mall customers based on "Annual Income" and "Spending Score" to optimize marketing strategies.
 * **Methodology:** Applied **K-Means Clustering** and determined the optimal number of clusters ($k=5$) using the **Elbow Method**.
 * **Key Results:** Identified 5 distinct customer profiles (e.g., "VIP/Champions", "Budget-Conscious"), providing actionable insights for targeted campaigns.
 * **Tech:** Python, Scikit-learn, Seaborn, Statistics.
 
 ### 2️⃣ [Automated Credit Card Approval Predictor](./Credit-Card-Prediction)
-**Type:** Supervised Learning (Classification) | **Status:** ✅ Completed
+**Type:** Supervised Learning (Classification) 
 * **Goal:** Automate credit assessment to minimize financial risk and manual review time.
 * **Methodology:** Built an end-to-end **Scikit-learn Pipeline** handling missing data imputation, scaling, and encoding. Optimized a Logistic Regression model via **GridSearchCV**.
 * **Key Results:** Achieved **87.68% Accuracy** and **0.90 ROC-AUC Score**, successfully identifying high-risk applicants.
 * **Tech:** Scikit-learn Pipeline, GridSearchCV, Confusion Matrix.
 
 ### 3️⃣ [Sentiment Analysis Classifier](./Sentiment-Analysis)
-**Type:** Natural Language Processing (NLP) | **Status:** 🚧 In Progress *(Link will be active soon)*
+**Type:** Natural Language Processing (NLP) 
 * **Goal:** Detect sentiment (Positive/Negative) in text data using Machine Learning.
 * **Approach:** Implementing text preprocessing (tokenization, stop-word removal) and **TF-IDF Vectorization**.
 * **Tech:** NLTK, SpaCy, Scikit-learn.
